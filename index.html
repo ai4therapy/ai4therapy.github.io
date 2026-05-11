@@ -513,6 +513,83 @@
         grid-template-columns: 1fr;
       }
     }
+
+    /* ---------- Schedule Table ---------- */
+
+    .schedule-table {
+      width: 100%;
+      border-collapse: collapse;
+      overflow: hidden;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.72);
+      backdrop-filter: blur(10px);
+    }
+
+    .schedule-table th,
+    .schedule-table td {
+      padding: 1rem;
+      text-align: left;
+      vertical-align: top;
+      border-bottom: 1px solid rgba(0,0,0,0.06);
+    }
+
+    .schedule-table th {
+      background: rgba(167,139,250,0.12);
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+
+    .schedule-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .schedule-time {
+      width: 180px;
+      font-weight: 600;
+      color: #5b21b6;
+    }
+
+    .schedule-title {
+      font-weight: 600;
+      margin-bottom: 0.35rem;
+    }
+
+    .schedule-desc {
+      font-size: 0.92rem;
+      line-height: 1.6;
+      color: #555;
+    }
+
+    @media (max-width: 768px) {
+
+      .schedule-table,
+      .schedule-table tbody,
+      .schedule-table tr,
+      .schedule-table td,
+      .schedule-table th {
+        display: block;
+        width: 100%;
+      }
+
+      .schedule-table thead {
+        display: none;
+      }
+
+      .schedule-table tr {
+        margin-bottom: 1rem;
+        border-radius: 16px;
+        overflow: hidden;
+        background: rgba(255,255,255,0.8);
+      }
+
+      .schedule-table td {
+        border-bottom: none;
+      }
+
+      .schedule-time {
+        padding-bottom: 0;
+      }
+    }
   </style>
 </head>
 
@@ -563,6 +640,7 @@
     <a href="#cfp">Call</a>
     <a href="#dates">Dates</a>
     <a href="#organizers">People</a>
+    <a href="#schedule">Schedule</a>
   </nav>
 
   <!-- About -->
@@ -845,6 +923,128 @@
 
   </section>
 
+  <!-- Schedule -->
+  <section id="schedule">
+
+  <h2>Workshop Schedule</h2>
+
+  <div class="card">
+
+    <p>
+      The workshop is designed as a highly interactive, one-day event
+      (approximately 6–8 hours), emphasizing dialogue, reflection,
+      and hands-on engagement.
+    </p>
+
+    <table class="schedule-table">
+
+      <thead>
+        <tr>
+          <th>Session</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+
+      <tbody>
+
+        <tr>
+          <td class="schedule-time">
+            Welcome and Introductions
+            <br>
+            <small>15 minutes</small>
+          </td>
+
+          <td>
+            <div class="schedule-desc">
+              The organizers will introduce the workshop’s motivation,
+              goals, and structure. Participants will briefly introduce
+              themselves and share their backgrounds and interests to
+              establish an inclusive, interdisciplinary atmosphere.
+            </div>
+          </td>
+        </tr>
+
+        <tr>
+          <td class="schedule-time">
+            Keynote Talks
+            <br>
+            <small>1 hour</small>
+          </td>
+
+          <td>
+            <div class="schedule-desc">
+              Two invited keynote speakers from complementary backgrounds
+              (e.g., HCI, art therapy, music therapy, or digital mental
+              health) will offer reflective perspectives on current
+              practices, challenges, and emerging directions for
+              AI-supported creative therapies.
+            </div>
+          </td>
+        </tr>
+
+        <tr>
+          <td class="schedule-time">
+            Lightning Talks
+            <br>
+            <small>2 hours</small>
+          </td>
+
+          <td>
+            <div class="schedule-desc">
+              Accepted contributors will give short lightning talks
+              (10 minutes each) to present ongoing projects, design
+              cases, clinical experiences, provocations, or open
+              questions. These talks are intended to surface diverse
+              perspectives and tensions rather than polished results.
+            </div>
+          </td>
+        </tr>
+
+        <tr>
+          <td class="schedule-time">
+            Group Discussions with Posters and Demos
+            <br>
+            <small>1 hour</small>
+          </td>
+
+          <td>
+            <div class="schedule-desc">
+              Participants will join small groups organized around
+              core themes, research questions, or technologies.
+              Groups will engage in structured co-creation activities,
+              such as mapping aspirations, challenges, opportunities,
+              and open questions using scaffolded visual methods.
+              Posters and demos will serve as anchors for discussion,
+              and outcomes will be synthesized into shared visual artifacts.
+            </div>
+          </td>
+        </tr>
+
+        <tr>
+          <td class="schedule-time">
+            Hands-on Experiences with AI-Supported Expressive Arts Therapy Prototypes
+            <br>
+            <small>1.5 hours</small>
+          </td>
+
+          <td>
+            <div class="schedule-desc">
+              Participants will engage directly with research prototypes,
+              interactive demos, or speculative tools. These hands-on
+              experiences aim to ground discussion in lived interaction
+              and embodied experience, moving beyond abstract debate.
+            </div>
+          </td>
+        </tr>
+
+      </tbody>
+
+    </table>
+
+  </div>
+
+</section>
+
   <!-- Footer -->
   <footer>
     <p>
@@ -933,3 +1133,4 @@
 
 </body>
 </html>
+
