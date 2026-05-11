@@ -3,214 +3,924 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
   <title>DIS 2026 Workshop | Human-Centered AI for Expressive Arts Therapy</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet">
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet">
+
   <style>
-    body { margin: 0; font-family: 'Inter', sans-serif; background: linear-gradient(180deg, #fdf6f9, #f0f9ff); color: #222; overflow-x: hidden; position: relative; }
-    
-    /* 全局透明浮动气泡容器 */
+    :root {
+      --bg-start: #fdf6f9;
+      --bg-end: #f0f9ff;
+
+      --primary: #a78bfa;
+      --secondary: #f472b6;
+
+      --text: #222;
+      --muted: #666;
+
+      --card-bg: rgba(255,255,255,0.82);
+
+      --radius: 18px;
+
+      --shadow:
+        0 8px 24px rgba(0,0,0,0.08);
+
+      --shadow-hover:
+        0 12px 30px rgba(124,58,237,0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      overflow-x: hidden;
+      position: relative;
+
+      font-family: 'Inter', sans-serif;
+      color: var(--text);
+
+      background:
+        linear-gradient(
+          180deg,
+          var(--bg-start),
+          var(--bg-end)
+        );
+    }
+
+    /* ---------- Background ---------- */
+
     .bubble-bg {
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
+      inset: 0;
+
       pointer-events: none;
       z-index: 0;
     }
-    /* 气泡样式 */
+
     .bg-bubble {
       position: absolute;
+
       border-radius: 50%;
-      background: rgba(255, 255, 255, 0.15);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      animation: bubble-float linear infinite;
-      opacity: 0.6;
+
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.18);
+
+      animation: bubbleFloat linear infinite;
     }
 
-    header { padding: 5rem 2rem; text-align: center; background: radial-gradient(circle at 30% 30%, #fbcfe8, transparent 40%), radial-gradient(circle at 70% 40%, #c7d2fe, transparent 40%), radial-gradient(circle at 50% 80%, #bbf7d0, transparent 40%); position: relative; overflow: hidden; z-index: 1; }
-    header h1 { font-family: 'Playfair Display', serif; font-size: 2.6rem; margin-bottom: 1rem; opacity: 0; animation: fadeIn 1.2s ease forwards; }
-    header p { font-size: 1.1rem; opacity: 0; animation: fadeIn 1.2s 0.3s ease forwards; max-width: 800px; margin: auto; }
-    nav { text-align: center; padding: 1rem; backdrop-filter: blur(10px); background: rgba(255,255,255,0.6); position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 12px rgba(0,0,0,0.05); }
-    nav a { margin: 0 12px; text-decoration: none; color: #444; font-weight: 500; transition: all 0.3s ease; display: inline-block; }
-    nav a:hover { color: #7c3aed; transform: translateY(-2px); }
-    section { max-width: 1000px; margin: auto; padding: 3rem 1.5rem; opacity: 0; transform: translateY(20px); transition: all 0.8s ease; position: relative; z-index: 1; }
-    section.visible { opacity: 1; transform: translateY(0); }
-    h2 { font-family: 'Playfair Display', serif; font-size: 2rem; margin-bottom: 1rem; position: relative; }
-    h2::after { content: ''; position: absolute; bottom: -6px; left: 0; width: 40px; height: 3px; background: linear-gradient(90deg, #a78bfa, #f472b6); border-radius: 2px; animation: expandLine 1.2s ease; }
-    .card { background: rgba(255,255,255,0.85); border-radius: 16px; padding: 1.5rem; backdrop-filter: blur(8px); box-shadow: 0 8px 24px rgba(0,0,0,0.08); margin-bottom: 1.5rem; transition: all 0.4s ease; border: 1px solid rgba(255,255,255,0.4); }
-    .card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(124, 58, 237, 0.1); }
-    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem; }
-    .bubble { border-radius: 20px; padding: 1rem; background: linear-gradient(135deg, #fde68a, #fca5a5); text-align: center; transition: all 0.4s ease; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
-    .bubble:hover { transform: scale(1.05) rotate(1deg); box-shadow: 0 6px 16px rgba(252, 165, 165, 0.2); }
-    .timeline { border-left: 3px solid #a78bfa; padding-left: 1rem; }
-    .timeline div { padding: 0.5rem 0; transition: padding 0.3s ease; }
-    .timeline div:hover { padding-left: 6px; }
-    .button { display: inline-block; padding: 0.7rem 1.4rem; border-radius: 999px; background: linear-gradient(135deg, #a78bfa, #f472b6); color: white; text-decoration: none; margin-top: 1rem; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(167, 139, 250, 0.2); }
-    .button:hover { transform: translateY(-3px); box-shadow: 0 6px 18px rgba(167, 139, 250, 0.3); }
-    footer { text-align: center; padding: 2rem; color: #666; opacity: 0; animation: fadeIn 1s 1s ease forwards; position: relative; z-index: 1; }
-    
-    /* 原有疗愈动画 */
-    .floating-light { position: absolute; border-radius: 50%; background: rgba(255, 255, 255, 0.3); filter: blur(8px); animation: float 8s infinite ease-in-out; z-index: 0; }
-    .mouse-particle { position: fixed; width: 8px; height: 8px; background: rgba(167, 139, 250, 0.25); border-radius: 50%; pointer-events: none; z-index: 9999; transition: transform 0.1s ease, opacity 0.5s ease; }
-    
-    /* 气泡浮动动画 */
-    @keyframes bubble-float {
-      0% { transform: translateY(120vh) rotate(0deg); opacity: 0; }
-      10% { opacity: 0.6; }
-      90% { opacity: 0.6; }
-      100% { transform: translateY(-100px) rotate(360deg); opacity: 0; }
+    /* ---------- Floating Lights ---------- */
+
+    .floating-light {
+      position: absolute;
+
+      border-radius: 50%;
+      filter: blur(10px);
+
+      background: rgba(255,255,255,0.28);
+
+      animation: float 8s ease-in-out infinite;
+      z-index: 0;
     }
 
-    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-    @keyframes float { 0% { transform: translateY(0) translateX(0) scale(1); opacity: 0.4; } 50% { transform: translateY(-20px) translateX(15px) scale(1.1); opacity: 0.7; } 100% { transform: translateY(0) translateX(0) scale(1); opacity: 0.4; } }
-    @keyframes expandLine { from { width: 0; } to { width: 40px; } }
-    @keyframes breathe { 0% { transform: scale(1); opacity: 0.7; } 50% { transform: scale(1.05); opacity: 1; } 100% { transform: scale(1); opacity: 0.7; } }
+    /* ---------- Header ---------- */
+
+    header {
+      position: relative;
+      z-index: 1;
+
+      overflow: hidden;
+      text-align: center;
+
+      padding:
+        4rem 1.5rem 3rem;
+
+      background:
+        radial-gradient(circle at 30% 30%, #fbcfe8, transparent 40%),
+        radial-gradient(circle at 70% 40%, #c7d2fe, transparent 40%),
+        radial-gradient(circle at 50% 80%, #bbf7d0, transparent 40%);
+    }
+
+    header h1 {
+      margin-bottom: 0.8rem;
+
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.2rem, 5vw, 3rem);
+
+      opacity: 0;
+      animation: fadeIn 1s ease forwards;
+    }
+
+    header p {
+      max-width: 780px;
+      margin: auto;
+
+      line-height: 1.7;
+      font-size: 1.05rem;
+
+      opacity: 0;
+      animation: fadeIn 1s 0.2s ease forwards;
+    }
+
+    /* ---------- Navigation ---------- */
+
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+
+      padding: 0.9rem;
+
+      text-align: center;
+
+      background: rgba(255,255,255,0.65);
+      backdrop-filter: blur(12px);
+
+      box-shadow:
+        0 2px 12px rgba(0,0,0,0.04);
+    }
+
+    nav a {
+      display: inline-block;
+
+      margin: 0 10px;
+
+      text-decoration: none;
+      color: #444;
+      font-weight: 500;
+
+      transition:
+        transform 0.25s ease,
+        color 0.25s ease;
+    }
+
+    nav a:hover {
+      color: var(--primary);
+      transform: translateY(-1px);
+    }
+
+    /* ---------- Sections ---------- */
+
+    section {
+      position: relative;
+      z-index: 1;
+
+      max-width: 1100px;
+      margin: auto;
+
+      padding:
+        2rem 1.5rem;
+
+      opacity: 0;
+      transform: translateY(18px);
+
+      transition:
+        opacity 0.7s ease,
+        transform 0.7s ease;
+    }
+
+    section.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    h2 {
+      position: relative;
+
+      margin-bottom: 1.2rem;
+
+      font-family: 'Playfair Display', serif;
+      font-size: 1.95rem;
+    }
+
+    h2::after {
+      content: '';
+
+      position: absolute;
+      left: 0;
+      bottom: -6px;
+
+      width: 42px;
+      height: 3px;
+
+      border-radius: 999px;
+
+      background:
+        linear-gradient(
+          90deg,
+          var(--primary),
+          var(--secondary)
+        );
+    }
+
+    /* ---------- Shared Cards ---------- */
+
+    .card {
+      padding: 1.2rem;
+
+      border-radius: var(--radius);
+
+      background: var(--card-bg);
+      backdrop-filter: blur(10px);
+
+      border:
+        1px solid rgba(255,255,255,0.45);
+
+      box-shadow: var(--shadow);
+
+      transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-hover);
+    }
+
+    /* ---------- Layout ---------- */
+
+    .grid {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .topic-grid {
+      margin-top: 1rem;
+
+      grid-template-columns:
+        repeat(auto-fit, minmax(220px, 1fr));
+    }
+
+    /* ---------- Topic Bubbles ---------- */
+
+    .bubble {
+      padding: 1rem;
+
+      border-radius: 18px;
+
+      text-align: center;
+
+      background:
+        linear-gradient(
+          135deg,
+          #fde68a,
+          #fca5a5
+        );
+
+      box-shadow:
+        0 4px 12px rgba(0,0,0,0.05);
+
+      transition:
+        transform 0.3s ease;
+    }
+
+    .bubble:hover {
+      transform: scale(1.03);
+    }
+
+    /* ---------- Timeline ---------- */
+
+    .timeline {
+      border-left:
+        3px solid var(--primary);
+
+      padding-left: 1rem;
+    }
+
+    .timeline div {
+      padding: 0.45rem 0;
+    }
+
+    /* ---------- Button ---------- */
+
+    .button {
+      display: inline-block;
+
+      margin-top: 1rem;
+      margin-right: 0.75rem;
+
+      padding:
+        0.72rem 1.4rem;
+
+      border-radius: 999px;
+
+      text-decoration: none;
+      color: white;
+
+      background:
+        linear-gradient(
+          135deg,
+          var(--primary),
+          var(--secondary)
+        );
+
+      box-shadow:
+        0 4px 12px rgba(167,139,250,0.22);
+
+      transition:
+        transform 0.25s ease;
+    }
+
+    .button:hover {
+      transform: translateY(-2px);
+    }
+
+    /* ---------- Organizers ---------- */
+
+    #organizers .grid {
+      grid-template-columns:
+        repeat(3, 1fr);
+
+      gap: 1rem;
+    }
+
+    #organizers .card {
+      display: flex;
+      align-items: flex-start;
+
+      gap: 0.9rem;
+      padding: 1rem;
+    }
+
+    .portrait {
+      width: 76px;
+      height: 76px;
+
+      object-fit: cover;
+      flex-shrink: 0;
+
+      border-radius: 16px;
+
+      border:
+        2px solid rgba(255,255,255,0.2);
+    }
+
+    .info {
+      flex: 1;
+    }
+
+    .info h3 {
+      margin: 0;
+
+      font-size: 1rem;
+      font-weight: 700;
+    }
+
+    .position {
+      display: inline-block;
+
+      margin-top: 0.3rem;
+
+      padding:
+        0.22rem 0.55rem;
+
+      border-radius: 999px;
+
+      font-size: 0.78rem;
+
+      background:
+        rgba(167,139,250,0.12);
+
+      color: #5b21b6;
+    }
+
+    .institution {
+      margin-top: 0.45rem;
+
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    .description {
+      margin-top: 0.55rem;
+
+      font-size: 0.85rem;
+      line-height: 1.45;
+
+      color: #555;
+    }
+
+    /* ---------- Footer ---------- */
+
+    footer {
+      position: relative;
+      z-index: 1;
+
+      padding: 1.5rem;
+
+      text-align: center;
+      color: var(--muted);
+    }
+
+    /* ---------- Mouse Particle ---------- */
+
+    .mouse-particle {
+      position: fixed;
+      z-index: 9999;
+
+      width: 8px;
+      height: 8px;
+
+      pointer-events: none;
+
+      border-radius: 50%;
+
+      background:
+        rgba(167,139,250,0.25);
+    }
+
+    /* ---------- Animations ---------- */
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
+
+    @keyframes bubbleFloat {
+      0% {
+        transform:
+          translateY(120vh)
+          rotate(0deg);
+
+        opacity: 0;
+      }
+
+      10% {
+        opacity: 0.6;
+      }
+
+      90% {
+        opacity: 0.6;
+      }
+
+      100% {
+        transform:
+          translateY(-100px)
+          rotate(360deg);
+
+        opacity: 0;
+      }
+    }
+
+    @keyframes float {
+      0%, 100% {
+        transform:
+          translateY(0)
+          translateX(0);
+      }
+
+      50% {
+        transform:
+          translateY(-18px)
+          translateX(12px);
+      }
+    }
+
+    /* ---------- Responsive ---------- */
+
+    @media (max-width: 1024px) {
+      #organizers .grid {
+        grid-template-columns:
+          repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 768px) {
+
+      nav a {
+        margin: 0 6px;
+        font-size: 0.95rem;
+      }
+
+      section {
+        padding:
+          1.7rem 1.2rem;
+      }
+
+      #organizers .grid {
+        grid-template-columns: 1fr;
+      }
+    }
   </style>
 </head>
+
 <body>
 
-<!-- 全局透明浮动气泡 -->
-<div class="bubble-bg" id="bubbleContainer"></div>
+  <!-- Background Bubbles -->
+  <div class="bubble-bg" id="bubbleContainer"></div>
 
-<!-- 鼠标跟随粒子 -->
-<div class="mouse-particle" id="particle"></div>
+  <!-- Mouse Particle -->
+  <div class="mouse-particle" id="particle"></div>
 
-<header>
-  <!-- 疗愈漂浮光点 -->
-  <div class="floating-light" style="width:120px; height:120px; top:10%; left:15%; animation-delay:0s"></div>
-  <div class="floating-light" style="width:90px; height:90px; top:30%; right:10%; animation-delay:1s"></div>
-  <div class="floating-light" style="width:150px; height:150px; bottom:15%; left:25%; animation-delay:2s"></div>
-  <div class="floating-light" style="width:70px; height:70px; top:60%; right:25%; animation-delay:3s"></div>
-  
-  <h1>Human-Centered AI for Expressive Arts Therapy</h1>
-  <p>Designing for Mental Well-Being and Creativity</p>
-</header>
+  <!-- Header -->
+  <header>
 
-<nav>
-  <a href="#about">About</a>
-  <a href="#cfp">Call</a>
-  <a href="#dates">Dates</a>
-  <a href="#organizers">People</a>
-</nav>
+    <div class="floating-light"
+         style="width:120px;height:120px;top:10%;left:15%;animation-delay:0s">
+    </div>
 
-<section id="about">
-  <h2>Workshop Overview</h2>
-  <div class="card">
-    <p>Expressive arts therapy supports creative expression through visual art, music, dance, and drama, fostering emotional awareness, regulation, and personal growth. Recent advances in generative AI, particularly multimodal models that produce images, music, text, and soundscapes, create new opportunities to scaffold creative exploration, provide adaptive prompts, and support reflective dialogue in therapeutic contexts. At the same time, integrating AI into expressive arts therapy raises important challenges around agency, authorship, emotional alignment, ethics, data privacy, and preserving therapeutic relationships.</p>
-    <p>This workshop brings together researchers, designers, therapists, and practitioners to explore how human-centered AI can support creativity in art and music therapy while respecting therapeutic values. We focus on insights from AI-enabled therapy systems, design approaches balancing creativity and emotional well-being, and evaluation methods that extend beyond usability and traditional clinical outcomes. Through interdisciplinary discussion, the workshop aims to surface open research questions and design considerations for AI use in expressive arts therapy.</p>
-  </div>
-  <div class="grid">
-    <div class="bubble">🎨 Creative Expression</div>
-    <div class="bubble">🧠 Mental Well-being</div>
-    <div class="bubble">🤝 Human-AI Collaboration</div>
-  </div>
-</section>
+    <div class="floating-light"
+         style="width:90px;height:90px;top:30%;right:10%;animation-delay:1s">
+    </div>
 
-<section id="cfp">
-  <h2>Call for Participation: Human-Centered AI for Expressive Arts Therapy</h2>
-  <div class="card">
-    <p>Advances in generative and multimodal AI are opening new possibilities for supporting creativity, emotional expression, and mental well-being. At the same time, integrating AI into expressive arts therapy raises critical questions about agency, ethics, evaluation, and the role of human care. This workshop brings together researchers, designers, artists, and therapists to critically examine how human-centered AI can support—rather than undermine—creative therapeutic practices.</p>
-    <p>We invite participants to submit short position papers, case studies describing completed, ongoing, or planned work, or reflective pieces on prior research (2–4 pages, ACM format). We also welcome alternative contributions, such as interactive or video demos and posters, that engage with topics including, but not limited to:</p>
-    
-    <ul>
-      <li>AI-supported creativity in art or music therapy</li>
-      <li>Design and evaluation of AI systems for mental well-being</li>
-      <li>Ethical, cultural, and methodological challenges in creative AI for care</li>
-      <li>Practitioner perspectives on AI in therapeutic settings</li>
-      <li>Speculative or critical approaches to AI and creative therapy</li>
-    </ul>
-  <p>Submissions should describe the contributor’s perspective, experience, or open questions rather than polished results. Selected participants will be invited to give a lightning talk and/or present a poster or demo during the workshop.</p>
-  <p>Please submit materials via the workshop website by May 25, 2026 (AOE). <b>At least one author of each accepted submission must attend the workshop in person</b>. We welcome interdisciplinary and exploratory contributions and encourage submissions from both academic and practitioner communities.</p>
-  
-  <a class="button" href="https://v.wjx.cn/vm/mv93fef.aspx">Submission Link</a>
-  </div>
-</section>
+    <div class="floating-light"
+         style="width:150px;height:150px;bottom:15%;left:25%;animation-delay:2s">
+    </div>
 
-<section id="dates">
-  <h2>Important Dates</h2>
-  <div class="card timeline">
-    <div><strong>Submission:</strong> May 15, 2026</div>
-    <div><strong>Notification:</strong> June 1, 2026</div>
-    <div><strong>Camera-ready:</strong> June 15, 2026</div>
-    <div><strong>Workshop:</strong> DIS 2026</div>
-  </div>
-</section>
+    <div class="floating-light"
+         style="width:70px;height:70px;top:60%;right:25%;animation-delay:3s">
+    </div>
 
-<section id="organizers">
-  <h2>Organizers</h2>
-  <div class="grid">
-    <div class="card"><strong>Yucheng Jin</strong><br/>Duke Kunshan University<br/><small>Research on human-AI collaboration and creativity support for mental well-being.</small></div>
-    <div class="card"><strong>Pengcheng An</strong><br/>SUSTech<br/><small>Human-AI interaction and user-centered design for education and well-being.</small></div>
-    <div class="card"><strong>Wanling Cai</strong><br/>University College Dublin<br/><small>Human-centered AI systems for decision-making and mental health contexts.</small></div>
-    <div class="card"><strong>Jingyi Yang</strong><br/>Beijing University of Chemical Technology<br/><small>Arts therapy and mental health education with clinical and research focus.</small></div>
-    <div class="card"><strong>Li Chen</strong><br/>Hong Kong Baptist University<br/><small>Personalized AI, explainability, and applications for mental well-being.</small></div>
-    <div class="card"><strong>Kayley Moylan</strong><br/>University College Dublin<br/><small>PhD research on integrating psychotherapy principles into digital technologies.</small></div>
-    <div class="card"><strong>Kevin Doherty</strong><br/>University College Dublin<br/><small>Design and clinical implementation of mental health technologies.</small></div>
-    <div class="card"><strong>Gavin Doherty</strong><br/>Trinity College Dublin<br/><small>HCI research focused on healthcare and mental health technologies.</small></div>
-    <div class="card"><strong>Jiangtao Gong</strong><br/>Tsinghua University AIR<br/><small>Cognitive augmentation AI for enhancing human capabilities and well-being.</small></div>
-  </div>
-</section>
+    <h1>
+      Human-Centered AI for Expressive Arts Therapy
+    </h1>
 
-<footer>
-  <p>Designed with care · DIS 2026 Workshop</p>
-</footer>
+    <p>
+      Designing for Mental Well-Being and Creativity
+    </p>
 
-<script>
-  // 自动生成随机透明气泡
-  function createBubbles() {
-    const container = document.getElementById('bubbleContainer');
-    const bubbleCount = 18; // 气泡数量
+  </header>
 
-    for (let i = 0; i < bubbleCount; i++) {
-      const bubble = document.createElement('div');
-      bubble.classList.add('bg-bubble');
-      
-      // 随机大小
-      const size = Math.random() * 60 + 20;
-      bubble.style.width = `${size}px`;
-      bubble.style.height = `${size}px`;
-      
-      // 随机位置
-      bubble.style.left = `${Math.random() * 100}%`;
-      
-      // 随机动画时长
-      const duration = Math.random() * 20 + 15;
-      bubble.style.animationDuration = `${duration}s`;
-      
-      // 随机延迟
-      bubble.style.animationDelay = `${Math.random() * 15}s`;
-      
-      container.appendChild(bubble);
+  <!-- Navigation -->
+  <nav>
+    <a href="#about">About</a>
+    <a href="#cfp">Call</a>
+    <a href="#dates">Dates</a>
+    <a href="#organizers">People</a>
+  </nav>
+
+  <!-- About -->
+  <section id="about">
+
+    <h2>Workshop Overview</h2>
+
+    <div class="card">
+
+      <p>
+        Expressive arts therapy supports creative expression through visual art, music, dance, and drama, fostering emotional awareness, regulation, and personal growth. Recent advances in generative AI, particularly multimodal models that produce images, music, text, and soundscapes, create new opportunities to scaffold creative exploration, provide adaptive prompts, and support reflective dialogue in therapeutic contexts. At the same time, integrating AI into expressive arts therapy raises important challenges around agency, authorship, emotional alignment, ethics, data privacy, and preserving therapeutic relationships.
+      </p>
+
+      <p>
+        This workshop brings together researchers, designers, therapists, and practitioners to explore how human-centered AI can support creativity in art and music therapy while respecting therapeutic values. We focus on insights from AI-enabled therapy systems, design approaches balancing creativity and emotional well-being, and evaluation methods that extend beyond usability and traditional clinical outcomes. Through interdisciplinary discussion, the workshop aims to surface open research questions and design considerations for AI use in expressive arts therapy.
+      </p>
+
+    </div>
+
+    <div class="grid topic-grid">
+
+      <div class="bubble">
+        🎨 Creative Expression
+      </div>
+
+      <div class="bubble">
+        🧠 Mental Well-being
+      </div>
+
+      <div class="bubble">
+        🤝 Human-AI Collaboration
+      </div>
+
+    </div>
+
+  </section>
+
+  <!-- CFP -->
+  <section id="cfp">
+
+    <h2>
+      Call for Participation:
+      Human-Centered AI for Expressive Arts Therapy
+    </h2>
+
+    <div class="card">
+
+      <p>
+        Advances in generative and multimodal AI are opening new possibilities for supporting creativity, emotional expression, and mental well-being. At the same time, integrating AI into expressive arts therapy raises critical questions about agency, ethics, evaluation, and the role of human care. This workshop brings together researchers, designers, artists, and therapists to critically examine how human-centered AI can support—rather than undermine—creative therapeutic practices.
+      </p>
+
+      <p>
+        We invite participants to submit short position papers, case studies describing completed, ongoing, or planned work, or reflective pieces on prior research (2–4 pages, ACM format). We also welcome alternative contributions, such as interactive or video demos and posters, that engage with topics including, but not limited to:
+      </p>
+
+      <ul>
+        <li>AI-supported creativity in art or music therapy</li>
+        <li>Design and evaluation of AI systems for mental well-being</li>
+        <li>Ethical, cultural, and methodological challenges in creative AI for care</li>
+        <li>Practitioner perspectives on AI in therapeutic settings</li>
+        <li>Speculative or critical approaches to AI and creative therapy</li>
+      </ul>
+
+      <p>
+        Submissions should describe the contributor’s perspective, experience, or open questions rather than polished results. Selected participants will be invited to give a lightning talk and/or present a poster or demo during the workshop.
+      </p>
+
+      <p>
+        Please submit materials via the workshop website by May 25, 2026 (AOE).
+        <b>
+          At least one author of each accepted submission must attend the workshop in person
+        </b>.
+        We welcome interdisciplinary and exploratory contributions and encourage submissions from both academic and practitioner communities.
+      </p>
+
+      <a class="button"
+         href="https://v.wjx.cn/vm/mv93fef.aspx"
+         target="_blank">
+         Submission Link
+      </a>
+
+      <b>
+        The registration code will be provided upon submission of your work.
+      </b>
+
+    </div>
+
+  </section>
+
+  <!-- Dates -->
+  <section id="dates">
+
+    <h2>Important Dates</h2>
+
+    <div class="card timeline">
+
+      <div>
+        <strong>Submission:</strong>
+        May 25, 2026
+      </div>
+
+      <div>
+        <strong>Notification:</strong>
+        June 1, 2026
+      </div>
+
+    </div>
+
+  </section>
+
+  <!-- Organizers -->
+  <section id="organizers">
+
+    <h2>Organizers</h2>
+
+    <div class="grid">
+
+      <div class="card">
+        <img class="portrait"
+             src="images/yucheng.jpg"
+             alt="Yucheng Jin portrait">
+
+        <div class="info">
+          <h3>Yucheng Jin</h3>
+          <div class="position">Assistant Professor</div>
+          <div class="institution">Duke Kunshan University</div>
+
+          <div class="description">
+            Research on human-AI collaboration and creativity support for mental well-being.
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <img class="portrait"
+             src="images/pengcheng.jpg"
+             alt="Pengcheng An portrait">
+
+        <div class="info">
+          <h3>Pengcheng An</h3>
+          <div class="position">Assistant Professor</div>
+          <div class="institution">SUSTech</div>
+
+          <div class="description">
+            Human-AI interaction and user-centered design for education and well-being.
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <img class="portrait"
+             src="images/wanling.jpg"
+             alt="Wanling Cai portrait">
+
+        <div class="info">
+          <h3>Wanling Cai</h3>
+          <div class="position">Assistant Professor</div>
+          <div class="institution">University College Dublin</div>
+
+          <div class="description">
+            Human-centered AI systems for decision-making and mental health contexts.
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <img class="portrait"
+             src="images/jingyi.jpg"
+             alt="Jingyi Yang portrait">
+
+        <div class="info">
+          <h3>Jingyi Yang</h3>
+          <div class="position">Lecturer and Therapist</div>
+          <div class="institution">
+            Beijing University of Chemical Technology
+          </div>
+
+          <div class="description">
+            Arts therapy and mental health education with clinical and research focus.
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <img class="portrait"
+             src="images/lichen.jpg"
+             alt="Li Chen portrait">
+
+        <div class="info">
+          <h3>Li Chen</h3>
+          <div class="position">Professor</div>
+          <div class="institution">
+            Hong Kong Baptist University
+          </div>
+
+          <div class="description">
+            Personalized AI, explainability, and applications for mental well-being.
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <img class="portrait"
+             src="images/kayley.jpg"
+             alt="Kayley Moylan portrait">
+
+        <div class="info">
+          <h3>Kayley Moylan</h3>
+          <div class="position">PhD Researcher</div>
+          <div class="institution">
+            University College Dublin
+          </div>
+
+          <div class="description">
+            PhD research on integrating psychotherapy principles into digital technologies.
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <img class="portrait"
+             src="images/kevin.jpg"
+             alt="Kevin Doherty portrait">
+
+        <div class="info">
+          <h3>Kevin Doherty</h3>
+          <div class="position">Assistant Professor</div>
+          <div class="institution">
+            University College Dublin
+          </div>
+
+          <div class="description">
+            Design and clinical implementation of mental health technologies.
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <img class="portrait"
+             src="images/gavin.jpg"
+             alt="Gavin Doherty portrait">
+
+        <div class="info">
+          <h3>Gavin Doherty</h3>
+          <div class="position">Professor</div>
+          <div class="institution">
+            Trinity College Dublin
+          </div>
+
+          <div class="description">
+            HCI research focused on healthcare and mental health technologies.
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <img class="portrait"
+             src="images/jiangtao.jpg"
+             alt="Jiangtao Gong portrait">
+
+        <div class="info">
+          <h3>Jiangtao Gong</h3>
+          <div class="position">Associate Professor</div>
+          <div class="institution">
+            Shanghai Jiao Tong University
+          </div>
+
+          <div class="description">
+            Cognitive augmentation AI for enhancing human capabilities and well-being.
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <p>
+      Designed with care · DIS 2026 Workshop
+    </p>
+  </footer>
+
+  <script>
+    // Create Floating Background Bubbles
+    function createBubbles() {
+      const container =
+        document.getElementById('bubbleContainer');
+
+      const bubbleCount = 18;
+
+      for (let i = 0; i < bubbleCount; i++) {
+
+        const bubble =
+          document.createElement('div');
+
+        bubble.classList.add('bg-bubble');
+
+        const size =
+          Math.random() * 60 + 20;
+
+        bubble.style.width = `${size}px`;
+        bubble.style.height = `${size}px`;
+
+        bubble.style.left =
+          `${Math.random() * 100}%`;
+
+        bubble.style.animationDuration =
+          `${Math.random() * 20 + 15}s`;
+
+        bubble.style.animationDelay =
+          `${Math.random() * 15}s`;
+
+        container.appendChild(bubble);
+      }
     }
-  }
-  createBubbles();
 
-  // 滚动渐入动画
-  const sections = document.querySelectorAll('section');
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) entry.target.classList.add('visible');
+    createBubbles();
+
+    // Scroll Fade-In Animation
+    const sections =
+      document.querySelectorAll('section');
+
+    const observer =
+      new IntersectionObserver(
+        (entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('visible');
+            }
+          });
+        },
+        { threshold: 0.1 }
+      );
+
+    sections.forEach(section => {
+      observer.observe(section);
     });
-  }, { threshold: 0.1 });
-  sections.forEach(section => observer.observe(section));
 
-  // 鼠标跟随轻柔粒子
-  const particle = document.getElementById('particle');
-  window.addEventListener('mousemove', (e) => {
-    particle.style.left = e.clientX - 4 + 'px';
-    particle.style.top = e.clientY - 4 + 'px';
-    particle.style.transform = 'scale(1.2)';
-    setTimeout(() => particle.style.transform = 'scale(1)', 100);
-  });
+    // Mouse Particle
+    const particle =
+      document.getElementById('particle');
 
-  // 平滑滚动
-  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', (e) => {
-      e.preventDefault();
-      document.querySelector(anchor.getAttribute('href')).scrollIntoView({ behavior: 'smooth' });
+    window.addEventListener('mousemove', (e) => {
+
+      particle.style.left =
+        `${e.clientX - 4}px`;
+
+      particle.style.top =
+        `${e.clientY - 4}px`;
+
+      particle.style.transform =
+        'scale(1.2)';
+
+      setTimeout(() => {
+        particle.style.transform =
+          'scale(1)';
+      }, 100);
+
     });
-  });
-</script>
+  </script>
+
 </body>
 </html>
